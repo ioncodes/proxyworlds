@@ -35,10 +35,10 @@ func handleData(src, dst net.Conn, wg *sync.WaitGroup, connectionType Connection
 			log.Printf("Relaying packet to process (%d bytes): %x", n, buffer[:n])
 		}
 
-		var raw bson.Raw = buffer[4:n]
-
+		cmd := buffer[:4]
+		raw := bson.Raw(buffer[4:n])
 		if raw.Validate() == nil {
-			log.Println(raw)
+			log.Printf("Deserialized (%x): %s\n", cmd, raw)
 		}
 
 		_, err = dst.Write(buffer[:n])
